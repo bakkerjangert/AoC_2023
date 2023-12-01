@@ -1,5 +1,3 @@
-import re
-
 file = 'input.txt'
 with open(file, 'r') as f:
     data = f.read().splitlines()
