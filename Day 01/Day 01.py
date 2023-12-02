@@ -8,7 +8,7 @@ numbers.update({n: n for n in digits})
 
 pt1, pt2 = 0, 0
 for line in data:
-    # print(line)
+    print(line)
     indexes_digit, indexes_total = dict(), dict()
     for number in numbers:
         string, delta_i = line, 0
@@ -22,7 +22,7 @@ for line in data:
     print(indexes_total)
     pt1 += int(indexes_digit[min(indexes_digit)] + indexes_digit[max(indexes_digit)])
     pt2 += int(indexes_total[min(indexes_total)] + indexes_total[max(indexes_total)])
-    # print('pt1', int(indexes_digit[min(indexes_digit)] + indexes_digit[max(indexes_digit)]))
-    # print('pt2', int(indexes_total[min(indexes_total)] + indexes_total[max(indexes_total)]))
+    print('pt1', int(indexes_digit[min(indexes_digit)] + indexes_digit[max(indexes_digit)]))
+    print('pt2', int(indexes_total[min(indexes_total)] + indexes_total[max(indexes_total)]))
 print(f'Answer Part 1: {pt1}')
 print(f'Answer Part 2: {pt2}')
