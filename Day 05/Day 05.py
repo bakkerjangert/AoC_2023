@@ -1,5 +1,6 @@
 file = 'input.txt'
 # file = 'test.txt'
+
 with open(file, 'r') as f:
     data = f.read().splitlines()
 
@@ -69,9 +70,13 @@ while i < len(numbers):
 ranges, deltas = [], []
 for line in data[1:]:
     if 'map' in line:
+        print(f'-- Analyzing {line}')
         update_numbers()
         seed_ranges = update_ranges()
+        stitch_ranges(seed_ranges)
+        print(len(seed_ranges))
         ranges, deltas = [], []
+
     elif line != '':
         rng = range(int(line.split()[1]), int(line.split()[1]) + int(line.split()[2]))
         delta = int(line.split()[0]) - int(line.split()[1])
