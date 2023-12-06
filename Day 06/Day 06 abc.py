@@ -1,5 +1,6 @@
 file = 'input.txt'
 # file = 'test.txt'
+file = 'tweak.txt'
 
 with open(file, 'r') as f:
     data = f.read().splitlines()
