@@ -22,6 +22,7 @@ for i, (d, t) in enumerate(zip(distances, times)):
     d_t = t_guess * (t - t_guess)
     while not d - eps < d_t < d + eps:
         t_guess = (t_min + t_max) / 2
+        # sometimes infinite loop occurs if average(t_min, t_max) == t_min or t_max; break out if that is happening.
         if t_guess in (t_min, t_max):
             break
         d_t =  t_guess * (t - t_guess)
