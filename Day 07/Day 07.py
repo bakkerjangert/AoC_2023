@@ -61,7 +61,7 @@ card_order_J = 'AKQT98765432J'
 
 file = 'input.txt'
 # file = 'test.txt'
-file = 'tweakers.txt'
+# file = 'tweakers.txt'
 with open(file, 'r') as f:
     data = f.read().splitlines()
 
