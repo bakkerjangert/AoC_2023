@@ -61,7 +61,7 @@ card_order_J = 'AKQT98765432J'
 
 file = 'input.txt'
 # file = 'test.txt'
-# file = 'tweakers.txt'
+file = 'tweakers.txt'
 with open(file, 'r') as f:
     data = f.read().splitlines()
 
@@ -75,12 +75,9 @@ sorted_cards = sorted(cards, key=lambda x: (types.index(x._type), [card_order.in
 sorted_cards_pt2 = sorted(cards, key=lambda x: (types.index(x.J_type), [card_order_J.index(i) for i in list(x.card)]))
 factor = len(cards)
 pt1, pt2 = 0, 0
-for card in sorted_cards:
-    pt1 += card.score * factor
-    factor -= 1
-factor = len(cards)
-for card in sorted_cards_pt2:
-    pt2 += card.score * factor
+for card_pt1, card_pt2 in zip(sorted_cards, sorted_cards_pt2):
+    pt1 += card_pt1.score * factor
+    pt2 += card_pt2.score * factor
     factor -= 1
 print(f'Part 1: {pt1}')
 print(f'Part 2: {pt2}')
