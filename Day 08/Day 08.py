@@ -38,6 +38,7 @@ while not (len(pt2_paths) == 0 and pos == 'ZZZ'):
     instruction = instructions.pop(0)
     if pos != 'ZZZ':
         pos = maze[pos][LR[instruction]]
+        print(pos)
         steps += 1
     for path in pt2_paths[:]:
         path.pos = maze[path.pos][LR[instruction]]
