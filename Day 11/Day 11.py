@@ -23,7 +23,7 @@ for i in range(len(rows) - 1):
         row_min, row_max = min(rows[i], rows[j]), max(rows[i], rows[j])
         col_min, col_max = min(cols[i], cols[j]), max(cols[i], cols[j])
         number_x = np.count_nonzero(grid[row_min: row_max, col_min] == 'X') + np.count_nonzero(grid[row_min, col_min: col_max] == 'X')
-        pt1 += (row_max - row_min) +  (col_max - col_min) + number_x
+        pt1 += (row_max - row_min) + (col_max - col_min) + number_x
         pt2 += (row_max - row_min) + (col_max - col_min) + number_x * (factor_pt2 - 1)
 print(f'Part 1 : {pt1}')
-print(f'Part 1 : {pt2}')
+print(f'Part 2 : {pt2}')
