@@ -57,4 +57,3 @@ rows_pt2 += check_vertical(arr, 1)
 cols_pt2 += check_horizontal(arr, 1)
 print(f'Part 1: {100 * rows_pt1 + cols_pt1}')
 print(f'Part 2: {100 * rows_pt2 + cols_pt2}')
-
