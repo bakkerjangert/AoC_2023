@@ -22,8 +22,8 @@ for string in data[0].split(','):
         del boxes[box][name]  # neat that dicts are ordered now in python
 
 for box in boxes:
-    for pos, lens in enumerate(boxes[box]):
-        pt2 += (box + 1) * (pos + 1) * boxes[box][lens]
+    for pos, focus in enumerate(boxes[box].values()):
+        pt2 += (box + 1) * (pos + 1) * focus
 
 print(f'Part 1: {pt1}')
 print(f'Part 2: {pt2}')
