@@ -1,5 +1,6 @@
 file = 'input.txt'
 # file = 'test.txt'
+file = 'aoc-2023-day-18-challenge-3.txt'
 with open(file, 'r') as f:
     data = f.read().splitlines()
 
