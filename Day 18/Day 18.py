@@ -1,6 +1,6 @@
 file = 'input.txt'
 # file = 'test.txt'
-file = 'aoc-2023-day-18-challenge-3.txt'
+# file = 'aoc-2023-day-18-challenge-3.txt'
 with open(file, 'r') as f:
     data = f.read().splitlines()
 
@@ -42,7 +42,7 @@ for x, y in zip(xs, ys[1:]):
     SHL += x * y
 for x, y in zip(xs[1:], ys):
     SHL -= x * y
-print(f'Part 1: {int(0.5 * abs(SHL) + 0.5 * steps + 1)}')
+print(f'Part 1: {abs(SHL) // 2 + steps // 2 + 1}')
 
 # Part 2
 SHL = 0
@@ -50,4 +50,4 @@ for x, y in zip(xs_pt2, ys_pt2[1:]):
     SHL += x * y
 for x, y in zip(xs_pt2[1:], ys_pt2):
     SHL -= x * y
-print(f'Part 2: {int(0.5 * abs(SHL) + 0.5 * steps_pt2 + 1)}')
+print(f'Part 2: {abs(SHL) // 2 + steps_pt2 // 2 + 1}')
