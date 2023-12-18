@@ -1,68 +1,52 @@
-import numpy as np
-
 file = 'input.txt'
-file = 'test.txt'
+# file = 'test.txt'
 with open(file, 'r') as f:
     data = f.read().splitlines()
 
-
-def add_row_top(grid):
-    row = np.array(['.'] * grid.shape[1])
-    grid = np.vstack((row, grid))
-    return grid
-
-
-def add_row_bottom(grid):
-    row = np.array(['.'] * grid.shape[1])
-    grid = np.vstack((grid, row))
-    return grid
-
-
-def add_col_left(grid):
-    col = np.array([['.']] * grid.shape[0])
-    grid = np.hstack((col, grid))
-    return grid
-
-
-def add_col_right(grid):
-    col = np.array([['.']] * grid.shape[0])
-    grid = np.hstack((grid, col))
-    return grid
-
-grid = np.array([['.']])
-xs, ys, x, y = [0], [0], 0, 0
+steps, xs, ys, x, y = 0, [0], [0], 0, 0
+steps_pt2, xs_pt2, ys_pt2, x_pt2, y_pt2 = 0, [0], [0], 0, 0
 for line in data:
+    steps += int(line.split()[1])
     if line[0] == 'R':
         x += int(line.split()[1])
-        while grid.shape[1] <= x:
-            grid = add_col_right(grid)
-        grid[y, xs[-1]: x + 1] = '#'
         xs.append(x), ys.append(ys[-1])
-    elif line[0] == 'D':
-        y += int(line.split()[1])
-        while grid.shape[0] <= y:
-            grid = add_row_bottom(grid)
-        grid[ys[-1]: y + 1, x] = '#'
-        xs.append(xs[-1]), ys.append(y)
     elif line[0] == 'L':
         x -= int(line.split()[1])
         xs.append(x), ys.append(ys[-1])
-        if x < 0:
-            for _ in range(x, 1, 1):
-                grid = add_col_left(grid)
-                xs = [i + 1 for i in xs]
-        grid[y, xs[-1]: xs[-2]] = '#'
+    elif line[0] == 'D':
+        y += int(line.split()[1])
+        xs.append(xs[-1]), ys.append(y)
     elif line[0] == 'U':
         y -= int(line.split()[1])
         xs.append(xs[-1]), ys.append(y)
-        if y < 0:
-            for _ in range(y, 1, 1):
-                grid = add_row_top(grid)
-                ys = [i + 1 for i in ys]
-        print(ys)
-        grid[ys[-1]: ys[-2], xs[-1]] = '#'
+    # Part 2
+    dist = int(line.split()[2][2:-2], 16)
+    steps_pt2 += dist
+    if line.split()[2][-2] == '0':
+        x_pt2 += dist
+        xs_pt2.append(x_pt2), ys_pt2.append(ys_pt2[-1])
+    elif line.split()[2][-2] == '2':
+        x_pt2 -= dist
+        xs_pt2.append(x_pt2), ys_pt2.append(ys_pt2[-1])
+    elif line.split()[2][-2] == '1':
+        y_pt2 += dist
+        xs_pt2.append(xs_pt2[-1]), ys_pt2.append(y_pt2)
+    elif line.split()[2][-2] == '3':
+        y_pt2 -= dist
+        xs_pt2.append(xs_pt2[-1]), ys_pt2.append(y_pt2)
 
-for line in grid:
-    print(''.join(line))
+# Part 1 - Straight forward shoe-lace area calculation
+SHL = 0
+for x, y in zip(xs, ys[1:]):
+    SHL += x * y
+for x, y in zip(xs[1:], ys):
+    SHL -= x * y
+print(f'Part 1: {int(0.5 * abs(SHL) + 0.5 * steps + 1)}')
 
-print(np.count_nonzero(grid == '#'))
+# Part 2
+SHL = 0
+for x, y in zip(xs_pt2, ys_pt2[1:]):
+    SHL += x * y
+for x, y in zip(xs_pt2[1:], ys_pt2):
+    SHL -= x * y
+print(f'Part 2: {int(0.5 * abs(SHL) + 0.5 * steps_pt2 + 1)}')
