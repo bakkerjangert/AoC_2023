@@ -135,6 +135,8 @@ for buttonPush in range(1000):
         modules[next_node].cast()
 print(f'Part 1: {highs[0] * lows[0]}')
 
+# Check input file for rx <-- df <-- [.. .. .. ..]
+# If all four [..] values are low, high is given to df and low is give to rx
 goals = {'ln': [0], 'xp': [0], 'xl': [0], 'gp': [0]}
 values, waiting_row = [], []
 modules = deepcopy(modules_pt2)
