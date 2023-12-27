@@ -1,105 +1,122 @@
 import numpy as np
 
 file = 'input.txt'
-file = 'test.txt'
+# file = 'test.txt'
 with open(file, 'r') as f:
     data = f.read().splitlines()
 
 valids = 0
-pos_pt1, pos_pt2 = set(), set()
-grid = ['U' * (len(data[0]) + 2), 'D' * (len(data[0]) + 2)]
+start_pos, pos_pt1, pos_pt2 = None, set(), set()
+grid = []
 for i, line in enumerate(data):
     valids += line.count('.')
     if 'S' in line:
         j = line.index('S')
-        pos_pt1.add(((j + 1), (i + 1))), pos_pt2.add(((j + 1), (i + 1), 0, 0))
-        grid.insert(-1, 'L' + line[: j] + '.' + line[j + 1:] + 'R')
+        start_pos = (j, i)
+        pos_pt1.add((j, i)), pos_pt2.add((j, i))
+        grid.append(line[: j] + '.' + line[j + 1:])
     else:
-        grid.insert(-1, 'L' + line + 'R')
+        grid.append(line)
 
-for step in range(64):
+# Diamond uneven has O on middle of outer edges
+diamond_even, diamond_uneven, square_even, square_uneven = None, None, None, None
+for step in range(150):
     prev_pos, pos_pt1 = pos_pt1, set()
     while prev_pos:
         p = prev_pos.pop()
         for d in (0, 1), (0, -1), (1, 0), (-1, 0):
+            if not (0 <= p[0] + d[0] < len(grid[0])) or not (0 <= p[1] + d[1] < len(grid)):
+                continue
             if grid[p[1] + d[1]][p[0] + d[0]] == '.':
                 pos_pt1.add(((p[0] + d[0]), (p[1] + d[1])))
-print(f'Part 1: {len(pos_pt1)}')
+    if step == 63:
+        diamond_even = len(pos_pt1)
+    if step == 64:
+        diamond_uneven = len(pos_pt1)
+    if step == 147:
+        square_even = len(pos_pt1)
+    if step == 148:
+        square_uneven = len(pos_pt1)
 
+diamond_uneven = len(pos_pt1)
+print(f'Part 1: {diamond_even}')
 
-def print_layout():
-    print(f'\nNext Layout')
-    for r in range(filled_pt2.shape[0]):
-        for c in range(filled_pt2.shape[1]):
-            dx, dy = abs(c - x), abs(r - y)
-            if filled_pt2[r, c] == 'O':
-                print('\033[1m\033[91m' + filled_pt2[r, c], end='')
-            elif dx + dy <= step + 1:
-                print('\033[1m\033[93m' + filled_pt2[r, c], end='')
-            else:
-                print('\033[0m' + filled_pt2[r, c], end='')
-        print('')
+grid = np.array(list(map(list, data)))
+grid = np.where(grid == 'S', '.', grid)
 
+n = 5
 
-
-grid_pt2 = np.array(list(map(list, data)))
-y, x = np.where(grid_pt2 == 'S')
-grid_pt2[y, x] = '.'
-y += grid_pt2.shape[0] * 4
-x += grid_pt2.shape[1] * 4
-grid_pt2 = np.hstack([grid_pt2] * 9)
-grid_pt2 = np.vstack([grid_pt2] * 9)
-
-pos = (int(x), int(y),)
-
-pos_pt2 = set()
-pos_pt2.add(pos)
-print(pos_pt2)
-steps = 26501365
+grid = np.vstack((grid,) * n)
+grid = np.hstack((grid,) * n)
+start = grid.shape[0] // 2
+grid[start, start] = 'O'
+steps = grid.shape[0] // 2
 for step in range(steps):
-    prev_pos, pos_pt2 = pos_pt2, set()
-    filled_pt2 = grid_pt2.copy()
-    while prev_pos:
-        p = prev_pos.pop()
-        for d in (0, 1), (0, -1), (1, 0), (-1, 0):
-            if grid_pt2[p[1] + d[1], p[0] + d[0]] == '.':
-                pos_pt2.add(((p[0] + d[0]), (p[1] + d[1])))
-                filled_pt2[p[1] + d[1], p[0] + d[0]] = 'O'
-    if step % 10 == 0 and step >= 10:
-        print_layout()
-        input('\n...\n')
-print(f'Part 1: {len(pos_pt1)}')
+    y, x = np.where(grid == 'O')
+    prev_grid = grid.copy()
+    for x, y in zip(x, y):
+        grid[y, x] = '.'
+        for d in (0, 1), (1, 0), (0, -1), (-1, 0):
+            if prev_grid[y + d[1], x + d[0]] != '#':
+                grid[y + d[1], x + d[0]] = 'O'
 
+# for j, row in enumerate(grid):
+#     if j % len(data) == 0:
+#         print('')
+#     line = ''.join(row)
+#     line = [line[i:i + len(line) // n] for i in range(0, len(line), len(line) // n)]
+#     print(' '.join(line))
 
-
-
-
-# x1, x2, y1, y2 = 1, len(grid[0]) - 2, 1, len(grid) - 2
+# Total shape is a large diamond. Cut it up in base squares results in 13 shapes to be analyzed and combined
+#        ^
+#       / \
+#      /   \
+#     /     \
+#     \     /
+#      \   /
+#       \ /
+#        v
 #
-# even_uneven = {0: 0, 1: 0}
-# prev_pos = set()
-# for step in range(steps):
-#     if step in (6, 10, 100, 500, 1000, 5000):
-#         print(f'At {step} steps --> {len(pos_pt2)}')
-#     prev_prev_pos, prev_pos, pos_pt2 = prev_pos, pos_pt2, set()
-#     while prev_pos:
-#         p = prev_pos.pop()
-#         next_node = None
-#         for d in (0, 1), (0, -1), (1, 0), (-1, 0):
-#             if grid[p[1] + d[1]][p[0] + d[0]] == '.':
-#                 next_node = (p[0] + d[0], p[1] + d[1], p[2], p[3])
-#             elif grid[p[1] + d[1]][p[0] + d[0]] == 'U':
-#                 next_node = (p[0] + d[0], y2, p[2], p[3] - 1)
-#             elif grid[p[1] + d[1]][p[0] + d[0]] == 'D':
-#                 next_node = (p[0] + d[0], y1, p[2], p[3] + 1)
-#             elif grid[p[1] + d[1]][p[0] + d[0]] == 'L':
-#                 next_node = (x2, p[1] + d[1], p[2] - 1, p[3])
-#             elif grid[p[1] + d[1]][p[0] + d[0]] == 'R':
-#                 next_node = (x1, p[1] + d[1], p[2] + 1, p[3])
-#             if next_node:
-#                 if next_node in prev_prev_pos:
-#                     even_uneven[step % 2] += 1
-#                 else:
-#                     pos_pt2.add(next_node)
-# print(f'Part 2: {len(pos_pt2) + even_uneven[steps % 2]}')
+# Shapes  A    B    C    D    E    F    G   H   I    J    K    L    M    N
+# Shapes +-+  /-+  +-+  +-\  +-+  +/        \+       ^   +-+   -+  +-   +-+
+#        | |  | |  | |  | |  | |  /     /    \  \   | |  | |  < |  | >  | |
+#        +-+  +-+  +-/  +-+  \-+       /+       +\  +-+   v    -+  +-   +-+
+# shape = 131 x 131; sloped edges from 1 - 65 or 65 to 131
+# Most outer tip is reached (O) making most outer squares (J to M) uneven
+# That makes the filler triangles (F to I) even and trapezoids (B to E) uneven
+# For the full square we alternate between uneven (A) and even (N)
 
+sub_size = grid.shape[0] // n
+squares, factors = dict(), dict()
+
+squares['A'] = np.count_nonzero(grid[2 * sub_size: 3 * sub_size, 2 * sub_size: 3 * sub_size] == 'O')
+squares['B'] = np.count_nonzero(grid[1 * sub_size: 2 * sub_size, 1 * sub_size: 2 * sub_size] == 'O')
+squares['C'] = np.count_nonzero(grid[3 * sub_size: 4 * sub_size, 3 * sub_size: 4 * sub_size] == 'O')
+squares['D'] = np.count_nonzero(grid[1 * sub_size: 2 * sub_size, 3 * sub_size: 4 * sub_size] == 'O')
+squares['E'] = np.count_nonzero(grid[3 * sub_size: 4 * sub_size, 1 * sub_size: 2 * sub_size] == 'O')
+squares['F'] = np.count_nonzero(grid[4 * sub_size: 5 * sub_size, 3 * sub_size: 4 * sub_size] == 'O')
+squares['G'] = np.count_nonzero(grid[0 * sub_size: 1 * sub_size, 1 * sub_size: 2 * sub_size] == 'O')
+squares['H'] = np.count_nonzero(grid[4 * sub_size: 5 * sub_size, 1 * sub_size: 2 * sub_size] == 'O')
+squares['I'] = np.count_nonzero(grid[0 * sub_size: 1 * sub_size, 3 * sub_size: 4 * sub_size] == 'O')
+squares['J'] = np.count_nonzero(grid[0 * sub_size: 1 * sub_size, 2 * sub_size: 3 * sub_size] == 'O')
+squares['K'] = np.count_nonzero(grid[4 * sub_size: 5 * sub_size, 2 * sub_size: 3 * sub_size] == 'O')
+squares['L'] = np.count_nonzero(grid[2 * sub_size: 3 * sub_size, 0 * sub_size: 1 * sub_size] == 'O')
+squares['M'] = np.count_nonzero(grid[2 * sub_size: 3 * sub_size, 4 * sub_size: 5 * sub_size] == 'O')
+squares['N'] = np.count_nonzero(grid[2 * sub_size: 3 * sub_size, 1 * sub_size: 2 * sub_size] == 'O')
+
+steps = 26501365
+squares_up = (steps - len(data) // 2) // len(data) + 1  # including center square
+
+factors['A'] = (squares_up - 2) ** 2 if squares_up % 2 == 1 else (squares_up - 1) ** 2
+for sqr in 'BCDE':
+    factors[sqr] = squares_up - 2
+for sqr in 'FGHI':
+    factors[sqr] = squares_up - 1
+for sqr in 'JKLM':
+    factors[sqr] = 1
+factors['N'] = (squares_up - 1) ** 2 if squares_up % 2 == 1 else (squares_up - 2) ** 2
+
+pt2 = 0
+for sqr in 'ABCDEFGHIJKLMN':
+    pt2 += squares[sqr] * factors[sqr]
+print(f'Part 2: {pt2}')
